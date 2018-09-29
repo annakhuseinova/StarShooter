@@ -43,7 +43,7 @@ public class MenuScreen extends BasicStarShooterScreen{
         Gdx.gl.glClearColor(2,0.5f,2.0f,0);
         Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
         batch.begin();
-        batch.draw(img,position.x,position.y);
+        batch.draw(img,position.x,position.y, 1f,1f);
         if (position.x <= direction.x && position.y <= direction.y){
             position.add(direction.x/15,direction.y/15);
         }else {

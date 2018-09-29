@@ -8,9 +8,11 @@ public class BasicScaledTouchUpButton extends Sprite {
     private int pointer;
     private boolean isPressed;
     private float pressScale;
+    private ActionListener actionListener;
 
-    public BasicScaledTouchUpButton(TextureRegion region, float pressScale) {
+    public BasicScaledTouchUpButton(TextureRegion region, ActionListener actionListener, float pressScale) {
         super(region);
+        this.actionListener = actionListener;
         this.pressScale = pressScale;
     }
 
@@ -32,7 +34,8 @@ public class BasicScaledTouchUpButton extends Sprite {
             return false;
         }
         if (isMe(touch)){
-
+           actionListener.actionPerformed(this);
+           return true;
         }
         isPressed = false;
         scale = 1f;

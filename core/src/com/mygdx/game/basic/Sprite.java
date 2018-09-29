@@ -4,6 +4,7 @@ import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.math.Vector2;
 import com.mygdx.game.math.Rect;
+import com.mygdx.game.utilities.Regions;
 
 public class Sprite extends Rect {
 
@@ -18,6 +19,10 @@ public class Sprite extends Rect {
         }
         regions = new TextureRegion[1];
         regions[0] = region;
+    }
+
+    public Sprite(TextureRegion region, int rows, int cols, int frames){
+        this.regions = Regions.split(region,rows,cols,frames);
     }
 
     public void setHeightProportion(float height) {
