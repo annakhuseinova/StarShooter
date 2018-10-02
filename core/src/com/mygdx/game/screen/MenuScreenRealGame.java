@@ -2,6 +2,7 @@ package com.mygdx.game.screen;
 
 import com.badlogic.gdx.Game;
 import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.audio.Music;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.TextureAtlas;
@@ -18,6 +19,8 @@ import com.mygdx.game.sprites.Star;
 public class MenuScreenRealGame extends BasicStarShooterScreen implements ActionListener {
 
     private static final int STAR_COUNT = 256;
+    Music gameMusic;
+    Music mainScreenMusic;
     Background background;
     Texture bg;
     TextureAtlas atlas;
@@ -28,6 +31,10 @@ public class MenuScreenRealGame extends BasicStarShooterScreen implements Action
 
     public MenuScreenRealGame(Game game) {
         super(game);
+        mainScreenMusic = Gdx.audio.newMusic(Gdx.files.internal("data/mainscreenmusic.mp3"));
+        mainScreenMusic.setLooping(true);
+        mainScreenMusic.setVolume(0.5f);
+        mainScreenMusic.play();
     }
 
     @Override
@@ -96,10 +103,10 @@ public class MenuScreenRealGame extends BasicStarShooterScreen implements Action
     }
 
     @Override
-    public boolean touchUp(int screenX, int screenY, int pointer, int button) {
+    public boolean touchUp(Vector2 touch, int pointer) {
         exitButton.touchUp(touch,pointer);
         playButton.touchUp(touch,pointer);
-        return super.touchUp(screenX, screenY, pointer, button);
+        return super.touchUp(touch,pointer);
     }
 
     @Override
@@ -107,8 +114,12 @@ public class MenuScreenRealGame extends BasicStarShooterScreen implements Action
         if (source == exitButton){
             Gdx.app.exit();
         }else if (source == playButton){
+            mainScreenMusic.stop();
             game.setScreen(new GameScreen(game));
-
+            gameMusic = Gdx.audio.newMusic(Gdx.files.internal("data/gamemusic.mp3"));
+            gameMusic.setVolume(0.5f);
+            gameMusic.setLooping(true);
+            gameMusic.play();
         }
 
     }
