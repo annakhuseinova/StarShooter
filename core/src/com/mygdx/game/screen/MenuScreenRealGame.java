@@ -18,6 +18,7 @@ import com.mygdx.game.sprites.Star;
 
 public class MenuScreenRealGame extends BasicStarShooterScreen implements ActionListener {
 
+
     private static final int STAR_COUNT = 256;
     Music gameMusic;
     Music mainScreenMusic;
