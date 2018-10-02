@@ -111,6 +111,7 @@ public class MenuScreenRealGame extends BasicStarShooterScreen implements Action
 
     @Override
     public void actionPerformed(Object source) {
+
         if (source == exitButton){
             Gdx.app.exit();
         }else if (source == playButton){
