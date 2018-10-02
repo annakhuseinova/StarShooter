@@ -115,6 +115,7 @@ public class MenuScreenRealGame extends BasicStarShooterScreen implements Action
         if (source == exitButton){
             Gdx.app.exit();
         }else if (source == playButton){
+
             mainScreenMusic.stop();
             game.setScreen(new GameScreen(game));
             gameMusic = Gdx.audio.newMusic(Gdx.files.internal("data/gamemusic.mp3"));
