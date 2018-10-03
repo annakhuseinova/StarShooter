@@ -2,7 +2,9 @@ package com.mygdx.game.screen;
 
 import com.badlogic.gdx.Game;
 import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.Input;
 import com.badlogic.gdx.audio.Music;
+import com.badlogic.gdx.audio.Sound;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.TextureAtlas;
@@ -11,21 +13,31 @@ import com.badlogic.gdx.math.Vector2;
 import com.mygdx.game.basic.BasicStarShooterScreen;
 import com.mygdx.game.math.Rect;
 import com.mygdx.game.poolOfObjects.BulletPool;
+import com.mygdx.game.poolOfObjects.EnemiesPool;
+import com.mygdx.game.poolOfObjects.ExplosionsPool;
 import com.mygdx.game.sprites.Background;
+import com.mygdx.game.sprites.Explosion;
 import com.mygdx.game.sprites.HeroShip;
 import com.mygdx.game.sprites.Star;
+import com.mygdx.game.utilities.EnemiesGenerator;
 
 
 public class GameScreen extends BasicStarShooterScreen {
 
 
+    Sound soundOfExplosion = Gdx.audio.newSound(Gdx.files.internal("data/explosionsound.mp3"));;
     private static final int STAR_COUNT = 64;
+    protected Sound shootingSound =  Gdx.audio.newSound(Gdx.files.internal("data/shootingsound.mp3"));
+    Sound bulletSound = Gdx.audio.newSound(Gdx.files.internal("data/shootingsound.mp3"));
     Background background;
     Texture bg;
     TextureAtlas atlas;
     Star[] star;
     HeroShip heroShip;
     BulletPool bulletPool;
+    EnemiesPool enemiesPool;
+    EnemiesGenerator enemiesGenerator;
+    ExplosionsPool explosionsPool;
 
     public GameScreen(Game game) {
         super(game);
@@ -44,7 +56,11 @@ public class GameScreen extends BasicStarShooterScreen {
             star[i] = new Star(atlas);
         }
         bulletPool = new BulletPool();
-        heroShip = new HeroShip(atlas, bulletPool);
+        heroShip = new HeroShip(atlas, bulletPool,shootingSound);
+        enemiesPool = new EnemiesPool(bulletPool,bulletSound,heroShip);
+        enemiesGenerator = new EnemiesGenerator(enemiesPool,atlas,worldBounds);
+        explosionsPool = new ExplosionsPool(atlas);
+
     }
 
     @Override
@@ -67,6 +83,8 @@ public class GameScreen extends BasicStarShooterScreen {
         }
         heroShip.draw(batch);
         bulletPool.drawActiveObjects(batch);
+        enemiesPool.drawActiveObjects(batch);
+        explosionsPool.drawActiveObjects(batch);
         batch.end();
     }
     public void update(float delta){
@@ -75,6 +93,9 @@ public class GameScreen extends BasicStarShooterScreen {
         }
         heroShip.update(delta);
         bulletPool.updateActiveObjects(delta);
+        enemiesPool.updateActiveObjects(delta);
+        explosionsPool.updateActiveObjects(delta);
+        enemiesGenerator.generateEnemies(delta);
     }
     public void checkCollisions(){}
 
@@ -86,6 +107,13 @@ public class GameScreen extends BasicStarShooterScreen {
 
     @Override
     public boolean keyDown(int keycode) {
+        switch (keycode){
+            case Input.Keys.UP:
+              Explosion explosion = explosionsPool.obtain();
+              explosion.set(0.15f,worldBounds.pos);
+              soundOfExplosion.play(0.3f);
+              break;
+        }
         heroShip.keyDown(keycode);
         return super.keyDown(keycode);
     }
@@ -117,10 +145,14 @@ public class GameScreen extends BasicStarShooterScreen {
         bg.dispose();
         atlas.dispose();
         bulletPool.dispose();
+        explosionsPool.dispose();
+        enemiesPool.dispose();
         super.dispose();
     }
 
     public void deleteDestroyedElements(){
         bulletPool.freeDestroyedActiveObjects();
+        explosionsPool.freeDestroyedActiveObjects();
+        enemiesPool.freeDestroyedActiveObjects();
     }
 }

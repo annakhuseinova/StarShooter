@@ -6,50 +6,48 @@ import com.badlogic.gdx.audio.Sound;
 import com.badlogic.gdx.graphics.g2d.TextureAtlas;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.math.Vector2;
-import com.mygdx.game.basic.Sprite;
+import com.mygdx.game.basic.Ship;
 import com.mygdx.game.math.Rect;
 import com.mygdx.game.poolOfObjects.BulletPool;
 
-public class HeroShip extends Sprite {
+public class HeroShip extends Ship {
 
 
-    Sound sound;
+
     private static final int INVALID_POINTER = -1;
     private Vector2 defaultSpeed = new Vector2(0.5f,0f);
-    private Vector2 actualSpeed = new Vector2();
-
     private boolean isLeftPressed;
     private boolean isRightPressed;
-
-    private Rect worldBounds;
-
-
     private int leftPointer = INVALID_POINTER;
     private int rightPointer = INVALID_POINTER;
 
-    protected BulletPool bulletPool;
-    private TextureRegion bulletRegion;
-    private Vector2 heroShipBulletSpeed = new Vector2(0, 0.5f);
 
-    public  HeroShip(TextureAtlas atlas, BulletPool bulletPool){
-        super(atlas.findRegion("main_ship"),1,2,2);
+
+
+    public  HeroShip(TextureAtlas atlas, BulletPool bulletPool, Sound shootingSound){
+        super(atlas.findRegion("main_ship"),1,2,2,bulletPool,shootingSound);
         this.bulletRegion = atlas.findRegion("bulletMainShip");
         setHeightProportion(0.15f);
         this.bulletPool = bulletPool;
-        sound = Gdx.audio.newSound(Gdx.files.internal("data/shootingsound.mp3"));
-
-
+        this.shootingSound = shootingSound;
+        this.shipBulletSpeed.set(0,0.5f);
+        this.reloadInterval = 0.2f;
     }
 
     @Override
     public void resize(Rect worldBounds) {
-        this.worldBounds = worldBounds;
+        super.resize(worldBounds);
         setBottom(worldBounds.getBottom() + 0.1f);
     }
 
     @Override
     public void update(float delta) {
         pos.mulAdd(actualSpeed,delta);
+        reloadTimer += delta;
+        if (reloadTimer >= reloadInterval){
+            reloadTimer = 0f;
+            shoot();
+        }
         if (getRight()> worldBounds.getRight()){
             setRight(worldBounds.getRight());
             stop();
@@ -94,9 +92,6 @@ public class HeroShip extends Sprite {
             case Input.Keys.RIGHT:
                 isRightPressed = true;
                 moveToTheRight();
-                break;
-            case Input.Keys.UP:
-                shoot();
                 break;
         }
 
@@ -147,10 +142,5 @@ public class HeroShip extends Sprite {
         return false;
 
     }
-    public void shoot(){
-        Bullet bullet = bulletPool.obtain();
-        bullet.set(this, bulletRegion, pos, heroShipBulletSpeed, 0.02f, worldBounds,1 );
-        sound.play(0.1f);
 
-    }
 }

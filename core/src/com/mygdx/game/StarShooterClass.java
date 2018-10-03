@@ -9,4 +9,5 @@ public class StarShooterClass extends Game {
 	public void create() {
         setScreen(new MenuScreenRealGame(this));
 	}
+
 }

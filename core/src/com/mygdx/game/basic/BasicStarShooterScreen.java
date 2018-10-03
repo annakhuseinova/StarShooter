@@ -17,7 +17,7 @@ public class BasicStarShooterScreen implements Screen, InputProcessor {
 
     protected Game game;
     private Rect screenBounds; // границы области рисования в пикселях
-    private Rect worldBounds; // граница проэкции мировых координат
+    protected Rect worldBounds; // граница проэкции мировых координат
     private Rect glBounds; // дефолтные границы OpenGl
 
     protected Matrix4 worldToGl;
