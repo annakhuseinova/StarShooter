@@ -105,7 +105,7 @@ public class MenuScreenRealGame extends BasicStarShooterScreen implements Action
 
     @Override
     public boolean touchUp(Vector2 touch, int pointer) {
-        exitButton.touchUp(touch,pointer);
+
         playButton.touchUp(touch,pointer);
         return super.touchUp(touch,pointer);
     }
