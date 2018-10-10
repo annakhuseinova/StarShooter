@@ -21,7 +21,7 @@ public class HeroShip extends Ship {
     private boolean isRightPressed;
     private int leftPointer = INVALID_POINTER;
     private int rightPointer = INVALID_POINTER;
-    protected int numberOfLives;
+    private boolean isNewGameStarted = false;
 
 
     public  HeroShip(TextureAtlas atlas, BulletPool bulletPool, ExplosionsPool explosionsPool,Sound shootingSound){
@@ -31,13 +31,15 @@ public class HeroShip extends Ship {
 
     }
     public void startNewGame(){
-        setHeightProportion(0.15f);
+
         this.bulletPool = bulletPool;
         this.shootingSound = shootingSound;
         this.shipBulletSpeed.set(0,0.5f);
         this.reloadInterval = 0.2f;
         this.explosionsPool = explosionsPool;
         this.numberOfLives = 100;
+        this.isNewGameStarted = true;
+        setHeightProportion(0.15f);
         flushDestructionMark();
     }
 
@@ -45,6 +47,7 @@ public class HeroShip extends Ship {
     public void resize(Rect worldBounds) {
         super.resize(worldBounds);
         setBottom(worldBounds.getBottom() + 0.1f);
+
     }
 
     @Override
@@ -67,6 +70,10 @@ public class HeroShip extends Ship {
         if (getBottom() < worldBounds.getBottom()) {
             boom();
             markAsDestroyed();
+        }
+        if (isNewGameStarted){
+            this.pos.x = 0;
+            isNewGameStarted = false;
         }
 
     }
